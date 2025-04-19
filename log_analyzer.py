@@ -18,20 +18,34 @@ class LogAnalyzer:
         """
         self.log_file_path = log_file_path
         self.parsed_logs = []
-
+        # Planned Tests:
+        # Test initialization with valid log file path
+        # Test initialization with non-existent file (should raise FileNotFoundError)
+        
     def parse_log_file(self):
         """
         Reads the log file and parses it using functions from log_parser.py.
 
         Returns:
             list: Parsed log entries as dictionaries
+        
+        Raises:
+            FileNotFoundError: If the log file doesn't exist
+            ValueError: If the log file format is invalid
         """
         self.parsed_logs = parse_log_file(self.log_file_path)
         return self.parsed_logs
+        # Planned Tests:
+        # Test parsing a valid log file with multiple entries
+        # Test parsing en empty log file
+        # Test handling of malformed entries in the log file
     
     def detect_threats(self):
         """
         Master method that runs all threat detection algorithms and compiles results.
+        
+        This method orchestrates the execution of all individual threat
+        detection methods and compiles their results.
 
         Returns:
             dict: Summary of all detected threats by category
@@ -43,34 +57,85 @@ class LogAnalyzer:
             "privilege_escalation": self.detect_privilege_escalation()
         }
         return threats_summary
-
+        # Planned Tests:
+        # Test with log data containing no threats
+        # Test with log data containing multiple types of threats
+        # Test that all detection methods are called and results are combined
+        
     def detect_failed_logins(self, threshold=3):
         """
         Detects multiple failed login attempts from the same IP or username.
+        
+        Args:
+            threshold (int): Number of failed attempts to trigger a detection
+        
+        Returns:
+            list: Detected failed login threats
         """
         pass
+        # Planned Tests:
+        # Test with exactly threshold failed attempts (should be detected)
+        # Test with more than threshold failed attempts (should be detected)
+        # Test with fewer than threshold attempts (should not be detected)
+        # Test with customized threshold value
 
     def detect_suspicious_ips(self, suspicious_ip_list=None):
         """
         Identifies access from known suspicious IPs.
+        
+        Args:
+            suspicious_ip_list (list, optional): List of known supicious IPS
+        
+        Returns:
+            list: Detected threats from suspicious IPs
         """
         pass
+        # Planned Tests:
+        # Test with provided list of suspicious IPs
+        # Test with default suspicious IP list
+        # Test with empty suspicious IP list
+        # Test with IPs not in the suspicious list
 
     def detect_unusual_access_times(self, start_hour=23, end_hour=5):
         """
         Detects logins during unusual hours.
+        
+        Args:
+            start_hour (int): Start hour for unusual time range (24-hour format)
+            end_hour (int): End hour for unusual time range (24-hour format)
+        
+        Returns:
+            list: Detected threats during unusual hours
         """
         pass
+        # Planned Tests:
+        # Test with access during default unusual hours
+        # Test with access outside default unusual hours
+        # Test with custom unusual hour range
+        # Test with invalid hour values (e.g., hours > 24)
 
     def detect_privilege_escalation(self):
         """
         Identifies potential privilege escalation attempts.
+        
+        Looks for patterns indicating a user attempting to gain higher privileges
+        than they should have access to.
+        
+        Returns:
+            list: Detected privilege escalation threats
         """
         pass
+        # Planned Tests:
+        # Test with clear privilege escalation patterns
+        # Test with ambiguous privilege change patterns
+        # Test with no privilege escalation attempts
 
     def generate_report(self, output_file=None):
         """
         Generate a formatted report of detected threats.
+        
+        Uses the report_generator module to create a summary report and either
+        display it to the console or save it to a file.
 
         Args:
             output_file (str, optional): Path to save the report, if None prints to console
@@ -85,3 +150,8 @@ class LogAnalyzer:
         else:
             display_report(report)
         return report
+        # Planned Tests:
+        # Test generating report to console output
+        # Test generating report to file
+        # Test report generation with no detected threats
+        # Test report formatting with various threat types
