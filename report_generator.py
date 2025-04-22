@@ -42,6 +42,21 @@ def format_threat_details(threat_type, threats):
     # Test formatting privilege escalation threats
     # Test with unknown threat type
 
+    lines = []
+    for threat in threats:
+        if isinstance(threat, dict):
+            line = []
+            if "ip" in threat:
+                line.append(f"IP: {threat['ip']}")
+            if "username" in threat:
+                line.append(f"User: {threat['username']}")
+            if "timestamp" in threat:
+                line.append(f"Time: {threat['timestamp']}")
+            lines.append(" | ".join(line))
+        else:
+            lines.append(str(threat))
+    return "\n".join(lines)
+
 def save_report(report, output_file_path):
     """
     Save a generated report to a file.
