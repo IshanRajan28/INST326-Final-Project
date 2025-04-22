@@ -37,7 +37,7 @@ class LogAnalyzer:
         return self.parsed_logs
         # Planned Tests:
         # Test parsing a valid log file with multiple entries
-        # Test parsing en empty log file
+        # Test parsing an empty log file
         # Test handling of malformed entries in the log file
     
     def detect_threats(self):
