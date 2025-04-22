@@ -14,6 +14,16 @@ def generate_summary_report(threats_summary):
     # Test with single type of threat
     # Test with empty threats dictionary
 
+    if not threats_summary:
+        return "No threats found.\n"
+
+    report = "Threat Report\n-------------\n"
+    for threat_type, threats in threats_summary.items():
+        report += f"\n{threat_type.title()}: {len(threats)} found\n"
+        if threats:
+            report += format_threat_details(threat_type, threats) + "\n"
+    return report
+
 def format_threat_details(threat_type, threats):
     """
     Format detailed information for a specific threat type.
