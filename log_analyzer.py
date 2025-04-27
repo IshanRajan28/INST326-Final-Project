@@ -1,5 +1,7 @@
-from log_parser import parse_log_file
+from log_parser import parse_log_line
 from report_generator import generate_summary_report, display_report, save_report
+from collections import defaultdict
+import os
 
 class LogAnalyzer:
     """
@@ -16,6 +18,9 @@ class LogAnalyzer:
         Args:
             log_file_path (str): Path to the log file to be analyzed
         """
+        if not os.path.isfile(log_file_path):
+            raise FileNotFoundError(f"The log file at {log_file_path} does not exist.")
+        
         self.log_file_path = log_file_path
         self.parsed_logs = []
         # Planned Tests:
@@ -33,7 +38,18 @@ class LogAnalyzer:
             FileNotFoundError: If the log file doesn't exist
             ValueError: If the log file format is invalid
         """
-        self.parsed_logs = parse_log_file(self.log_file_path)
+        self.parsed_logs = []
+        
+        try:
+            with open(self.log_file_path, 'r') as file:
+                for line in file:
+                    parsed_entry = parse_log_line(line)
+                    if parsed_entry:
+                        self.parsed_logs.append(parsed_entry)
+        
+        except Exception as e:
+            raise ValueError(f"Error parsing log file: {e}")
+        
         return self.parsed_logs
         # Planned Tests:
         # Test parsing a valid log file with multiple entries
@@ -72,7 +88,31 @@ class LogAnalyzer:
         Returns:
             list: Detected failed login threats
         """
-        pass
+        failed_attempts_by_ip = defaultdict(int)
+        failed_attempts_by_username = defaultdict(int)
+        detected_ips = set()
+        detected_usernames = set()
+        failed_logins = []
+        
+        for log_entry in self.parsed_logs:
+            ip = log_entry.get('ip')
+            username = log_entry.get('username')
+            action, status = log_entry.get('action_status', (None, None))
+            
+            if action == 'login' and status == 'failure':
+                if ip:
+                    failed_attempts_by_ip[ip] += 1
+                    if failed_attempts_by_ip[ip] >= threshold and ip not in detected_ips:
+                        failed_logins.append({'ip': ip, 'failed_attempts': failed_attempts_by_ip[ip]})
+                        detected_ips.add(ip)
+                    
+                    if username:
+                        failed_attempts_by_username[username] += 1
+                        if failed_attempts_by_username[username] >= threshold and username not in detected_usernames:
+                            failed_logins.append({'username': username, 'failed_attempts': failed_attempts_by_username[username]})
+                            detected_usernames.add(username)
+        
+        return failed_logins
         # Planned Tests:
         # Test with exactly threshold failed attempts (should be detected)
         # Test with more than threshold failed attempts (should be detected)
