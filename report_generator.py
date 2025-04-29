@@ -73,6 +73,13 @@ def save_report(report, output_file_path):
     # Test saving with permission issues
     # Test saving empty report
 
+    try:
+        with open(output_file_path, "w") as file:
+            file.write(report)
+        return True
+    except:
+        return False
+
 def display_report(report):
     """
     Display a report to the console with appropriate formatting.
