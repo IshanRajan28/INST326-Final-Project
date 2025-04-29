@@ -11,7 +11,7 @@ class LogAnalyzer:
     detection algorithms, and generating reports on the findings.
     """
     
-    def __init__(self, log_file_path):
+    def __init__(self, log_file_path, threshold = 3, suspicious_ip_list = None, ):
         """
         Initialize the LogAnalyzer with a path to the log file.
         
@@ -23,6 +23,18 @@ class LogAnalyzer:
         
         self.log_file_path = log_file_path
         self.parsed_logs = []
+        self.threshold = threshold
+        
+        if suspicious_ip_list is None:
+            self.suspicious_ip_list = [
+                '45.227.225.6', # SSH brute-force attacker
+                '185.232.67.3', # Phishing/Spam host (Spamhaus)
+                '185.6.233.3', # Botnet C2 server (AlienVault OTX)
+                '198.144.121.93', # Malware distribution (AbuseIPDB)
+            ]
+        
+        else:
+            self.suspicious_ip_list = suspicious_ip_list
         # Planned Tests:
         # Test initialization with valid log file path
         # Test initialization with non-existent file (should raise FileNotFoundError)
@@ -78,7 +90,7 @@ class LogAnalyzer:
         # Test with log data containing multiple types of threats
         # Test that all detection methods are called and results are combined
         
-    def detect_failed_logins(self, threshold=3):
+    def detect_failed_logins(self):
         """
         Detects multiple failed login attempts from the same IP or username.
         
@@ -102,13 +114,13 @@ class LogAnalyzer:
             if action == 'login' and status == 'failure':
                 if ip:
                     failed_attempts_by_ip[ip] += 1
-                    if failed_attempts_by_ip[ip] >= threshold and ip not in detected_ips:
+                    if failed_attempts_by_ip[ip] >= self.threshold and ip not in detected_ips:
                         failed_logins.append({'ip': ip, 'failed_attempts': failed_attempts_by_ip[ip]})
                         detected_ips.add(ip)
                     
                     if username:
                         failed_attempts_by_username[username] += 1
-                        if failed_attempts_by_username[username] >= threshold and username not in detected_usernames:
+                        if failed_attempts_by_username[username] >= self.threshold and username not in detected_usernames:
                             failed_logins.append({'username': username, 'failed_attempts': failed_attempts_by_username[username]})
                             detected_usernames.add(username)
         
@@ -119,17 +131,38 @@ class LogAnalyzer:
         # Test with fewer than threshold attempts (should not be detected)
         # Test with customized threshold value
 
-    def detect_suspicious_ips(self, suspicious_ip_list=None):
+    def detect_suspicious_ips(self):
         """
         Identifies access from known suspicious IPs.
         
         Args:
-            suspicious_ip_list (list, optional): List of known supicious IPS
+            suspicious_ip_list (list, optional): List of known suspicious IPS
         
         Returns:
             list: Detected threats from suspicious IPs
         """
-        pass
+        
+        if not self.suspicious_ip_list:
+            return []
+        
+        detected_threats = []
+        
+        for ip in self.suspicious_ip_list:
+            matching_entries = []
+            
+            for entry in self.parsed_logs:
+                if entry['ip'] == ip:
+                    matching_entries.append(entry)
+            
+            if matching_entries:
+                detected_threats.append({
+                    'ip': ip,
+                    'count': len(matching_entries),
+                    'entries': matching_entries
+                })
+        
+        return detected_threats
+
         # Planned Tests:
         # Test with provided list of suspicious IPs
         # Test with default suspicious IP list
