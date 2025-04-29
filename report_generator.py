@@ -91,3 +91,8 @@ def display_report(report):
     # Test displaying regular report
     # Test displaying report with ANSI color formatting
     # Test displaying empty report
+
+    if report:
+        print(report)
+    else:
+        print("The report is empty.")
