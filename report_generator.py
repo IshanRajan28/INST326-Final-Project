@@ -9,10 +9,6 @@ def generate_summary_report(threats_summary):
     Returns:
         str: Formatted report text
     """
-    # Planned Tests:
-    # Test with multiple types of threats
-    # Test with single type of threat
-    # Test with empty threats dictionary
 
     if not threats_summary:
         return "No threats found.\n"
@@ -23,6 +19,11 @@ def generate_summary_report(threats_summary):
         if threats:
             report += format_threat_details(threat_type, threats) + "\n"
     return report
+    
+    # Planned Tests:
+    # Test with multiple types of threats
+    # Test with single type of threat
+    # Test with empty threats dictionary
 
 def format_threat_details(threat_type, threats):
     """
@@ -35,13 +36,7 @@ def format_threat_details(threat_type, threats):
     Returns:
         str: Formatted threat details
     """
-    # Planned Tests:
-    # Test formatting failed login threats
-    # Test formatting suspicious IP threats
-    # Test formatting unusual access time threats
-    # Test formatting privilege escalation threats
-    # Test with unknown threat type
-
+    
     lines = []
     for threat in threats:
         if isinstance(threat, dict):
@@ -57,6 +52,13 @@ def format_threat_details(threat_type, threats):
             lines.append(str(threat))
     return "\n".join(lines)
 
+    # Planned Tests:
+    # Test formatting failed login threats
+    # Test formatting suspicious IP threats
+    # Test formatting unusual access time threats
+    # Test formatting privilege escalation threats
+    # Test with unknown threat type
+
 def save_report(report, output_file_path):
     """
     Save a generated report to a file.
@@ -68,10 +70,6 @@ def save_report(report, output_file_path):
     Returns:
         bool: True if successful, False otherwise
     """
-    # Planned Tests:
-    # Test saving to valid file path
-    # Test saving with permission issues
-    # Test saving empty report
 
     try:
         with open(output_file_path, "w") as file:
@@ -79,6 +77,11 @@ def save_report(report, output_file_path):
         return True
     except:
         return False
+    
+    # Planned Tests:
+    # Test saving to valid file path
+    # Test saving with permission issues
+    # Test saving empty report
 
 def display_report(report):
     """
@@ -87,12 +90,13 @@ def display_report(report):
     Args:
         report (str): The report content
     """
-    # Planned Tests:
-    # Test displaying regular report
-    # Test displaying report with ANSI color formatting
-    # Test displaying empty report
-
+    
     if report:
         print(report)
     else:
         print("The report is empty.")
+    
+    # Planned Tests:
+    # Test displaying regular report
+    # Test displaying report with ANSI color formatting
+    # Test displaying empty report
