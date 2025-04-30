@@ -11,7 +11,7 @@ class LogAnalyzer:
     detection algorithms, and generating reports on the findings.
     """
     
-    def __init__(self, log_file_path, threshold = 3, suspicious_ip_list = None, ):
+    def __init__(self, log_file_path, threshold = 3, suspicious_ip_list = None, start_time = 23, end_time = 5):
         """
         Initialize the LogAnalyzer with a path to the log file.
         
@@ -25,6 +25,15 @@ class LogAnalyzer:
         self.parsed_logs = []
         self.threshold = threshold
         
+        if start_time < 0 or start_time > 23:
+            raise ValueError(f"Invalid start time: {start_time}. Please enter a value between 0 and 23.")
+        
+        if end_time < 0 or end_time > 23:
+            raise ValueError(f"Invalid end time: {end_time}. Please enter a value between 0 and 23.")
+    
+        self.start_time = start_time
+        self.end_time = end_time
+        
         if suspicious_ip_list is None:
             self.suspicious_ip_list = [
                 '45.227.225.6', # SSH brute-force attacker
@@ -35,6 +44,7 @@ class LogAnalyzer:
         
         else:
             self.suspicious_ip_list = suspicious_ip_list
+        
         # Planned Tests:
         # Test initialization with valid log file path
         # Test initialization with non-existent file (should raise FileNotFoundError)
@@ -169,7 +179,7 @@ class LogAnalyzer:
         # Test with empty suspicious IP list
         # Test with IPs not in the suspicious list
 
-    def detect_unusual_access_times(self, start_hour=23, end_hour=5):
+    def detect_unusual_access_times(self):
         """
         Detects logins during unusual hours.
         
@@ -180,7 +190,27 @@ class LogAnalyzer:
         Returns:
             list: Detected threats during unusual hours
         """
-        pass
+        if not self.parsed_logs:
+            raise ValueError("No parsed logs found. Make sure to run parse_log_file() first.")
+
+        unusual_entries = []
+        for entry in self.parsed_logs:
+            timestamp = entry.get('timestamp')
+            if not timestamp:
+                continue
+            
+            hour = timestamp.hour
+            
+            if self.start_time > self.end_time:
+                if hour >= self.start_time or hour < self.end_time:
+                    unusual_entries.append(entry)
+
+            else:
+                if self.start_time <= hour < self.end_time:
+                    unusual_entries.append(entry)
+        
+        return unusual_entries
+            
         # Planned Tests:
         # Test with access during default unusual hours
         # Test with access outside default unusual hours
@@ -197,7 +227,23 @@ class LogAnalyzer:
         Returns:
             list: Detected privilege escalation threats
         """
-        pass
+        
+        # common privilege escalation indicators
+        escalation_keywords = ['sudo', 'su', 'root', 'uid=0']
+        escalations = []
+        
+        for entry in self.parsed_logs:
+            if entry.get('action_status') is None:
+                continue
+            
+            raw_line = entry.get('raw_line')
+            for keyword in escalation_keywords:
+                if keyword in raw_line:
+                    escalations.append(entry)
+                    break
+            
+        return escalations
+                
         # Planned Tests:
         # Test with clear privilege escalation patterns
         # Test with ambiguous privilege change patterns
@@ -217,11 +263,15 @@ class LogAnalyzer:
             str: The generated report text
         """
         threats = self.detect_threats()
+        
         report = generate_summary_report(threats)
+        
         if output_file:
             save_report(report, output_file)
+        
         else:
             display_report(report)
+        
         return report
         # Planned Tests:
         # Test generating report to console output

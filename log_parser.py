@@ -53,7 +53,8 @@ def parse_log_line(line, format_type =None):
         'ip': extract_ip_address(line),
         'username': extract_username(line),
         'action_status': extract_action_status(line),
-        'format': format_type
+        'format': format_type,
+        'raw_line': line.strip()
     }
     return parsed
     
