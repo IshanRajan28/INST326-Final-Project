@@ -9,6 +9,11 @@ def parse_arguments():
     Returns:
         argparse.Namespace: Parsed command line arguments
     """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("log_file", type=str)
+    parser.add_argument("-o", "--output", type=str)
+    return parser.parse_args()
+
     # Planned Tests:
     # Test with valid command line arguments
     # Test with missing required arguments
