@@ -112,29 +112,30 @@ class LogAnalyzer:
         """
         failed_attempts_by_ip = defaultdict(int)
         failed_attempts_by_username = defaultdict(int)
-        detected_ips = set()
-        detected_usernames = set()
-        failed_logins = []
         
         for log_entry in self.parsed_logs:
-            ip = log_entry.get('ip')
-            username = log_entry.get('username')
             action, status = log_entry.get('action_status', (None, None))
-            
             if action == 'login' and status == 'failure':
+                ip = log_entry.get('ip')
+                username = log_entry.get('username')
+                
                 if ip:
-                    failed_attempts_by_ip[ip] += 1
-                    if failed_attempts_by_ip[ip] >= self.threshold and ip not in detected_ips:
-                        failed_logins.append({'ip': ip, 'failed_attempts': failed_attempts_by_ip[ip]})
-                        detected_ips.add(ip)
-                    
-                    if username:
-                        failed_attempts_by_username[username] += 1
-                        if failed_attempts_by_username[username] >= self.threshold and username not in detected_usernames:
-                            failed_logins.append({'username': username, 'failed_attempts': failed_attempts_by_username[username]})
-                            detected_usernames.add(username)
+                    failed_attempts_by_ip[ip]+=1
+                
+                if username:
+                    failed_attempts_by_username[username] += 1
+            
+        threats = []
+        for ip, count in failed_attempts_by_ip.items():
+            if count>= self.threshold:
+                threats.append({'ip': ip, 'failed_attempts': count})
         
-        return failed_logins
+        for username, count in failed_attempts_by_username.items():
+            if count >= self.threshold:
+                threats.append({'username': username, 'failed_attempts': count})
+
+        return threats
+            
         # Planned Tests:
         # Test with exactly threshold failed attempts (should be detected)
         # Test with more than threshold failed attempts (should be detected)
