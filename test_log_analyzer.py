@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, mock_open
 from datetime import datetime
 from log_analyzer import LogAnalyzer
-import os
+
 
 # =============================================
 # TEST DATA DEFINITIONS
