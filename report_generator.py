@@ -50,6 +50,10 @@ def format_threat_details(threat_type, threats):
             lines.append(" | ".join(line))
         else:
             lines.append(str(threat))
+    
+    if not lines:
+        return f"No details available for {threat_type} threats."
+    
     return "\n".join(lines)
 
     # Planned Tests:
