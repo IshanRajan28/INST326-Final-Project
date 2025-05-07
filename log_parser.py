@@ -75,7 +75,7 @@ def extract_timestamp(log_line):
     """
     patterns = [
         r"\[(\d{2}/[A-Za-z]+/\d{4}:\d{2}:\d{2}:\d{2} [+-]\d{4})\]", #Apache/Nginx
-        r'([A-Za-z]{3} \d{1,2} \d{2}:\d{2}:\d{2}) .*' #SSH
+        r'([A-Za-z]{3}  \d{1,2} \d{2}:\d{2}:\d{2}) .*' #SSH
 
     ]
     
