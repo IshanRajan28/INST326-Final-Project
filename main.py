@@ -13,7 +13,7 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser(description="Security Log Analyzer - Detect potential security threats in log file")
     parser.add_argument("log_file", type=str, help="Path to the log file to analyze")
-    parser.add_argument("-o", "--output", type=str, help="Path to save the output report(if not specified, prints to console)")
+    parser.add_argument("-o", "---output", type=str, help="Path to save the output report(if not specified, prints to console)")
     parser.add_argument("-t","--threshold", type=int, default=3, help="Threshold for failed login attempts (default: 3)")
     parser.add_argument("-i","--suspicious-ips",type=str, help="Comma-separated list of suspicious IP addresses to check for")
     parser.add_argument("-s","--start-time",type=int,default=23,help="Start hour for unusual access time detection (24-hour format, default: 23)")
