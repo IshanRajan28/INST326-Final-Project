@@ -128,7 +128,14 @@ def extract_ip_address(log_line):
 
 def extract_username(log_line):
     """
-    Extract username from a log line.
+    Extract username from standard log formats (Apache, Nginx, SSH).
+    Returns None if no valid username found.
+    
+    Handles these formats:
+    - SSH: "Failed passwords for invalid user bob from 10.0.0.1"
+    - Nginx: "127.0.0.1 - alice [10/Oct/2023:13:56:36 +0000]"
+    - Apache "192.168.1.1 - frank [10/Oct/2023:13:55:36 +0000]"
+    - Key-value: "user=admin" or "useradmin: admin"
     
     Args:
         log_line (str): Log line to extract username from
@@ -137,23 +144,20 @@ def extract_username(log_line):
         str: Extracted username or None if not found
     """
     
-    #Attempt to find the username in invalid login attempts
-    match = re.search(r'for (invalid user )?(\w+)', log_line)
-    if match:
-        return match.group(2)
+    #Checks if it is SSH format
+    if (ssh_match := re.search(r'for (?:invalid user )?(\S+)', log_line)):
+        return ssh_match.group(1)
     
-    #Attempt to find the username in user= or username= pattern 
-    #(common in Apache/Nginx logs)
-    match = re.search(r'user(?:name)?[=: ]+(\w+)', log_line, re.IGNORECASE)
-    if match:
-        return match.group(1)
+    #Checks if it is web server common log format (Apache/Nginx)
+    if (web_match := re.search(r'^\S+ \S+ (\S+)(?= \[)', log_line)):
+        if web_match.group(1) != '-':
+            return web_match.group(1)
+    
+    #Checks if it is key-value format
+    if (kv_match := re.search(r'user(?:name)?[=:]"?([^\s"\]]+)', log_line, re.IGNORECASE)):
+        return kv_match.group(1)
     
     return None
-    # Planned Tests:
-    # Test with standard alphanumeric username
-    # Test with username containing special characters
-    # Test with system username (root, admin, etc.)
-    # Test with log line missing username
 
 def extract_action_status(log_line):
     """
