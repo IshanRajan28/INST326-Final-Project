@@ -2,6 +2,7 @@ from log_parser import parse_log_line
 from report_generator import generate_summary_report, display_report, save_report
 from collections import defaultdict
 import os
+from datetime import datetime
 
 class LogAnalyzer:
     """
@@ -193,7 +194,8 @@ class LogAnalyzer:
             if not timestamp:
                 continue
             
-            hour = timestamp.hour
+            timestamp = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+            hour = timestamp.hour 
             
             if self.start_time > self.end_time:
                 if hour >= self.start_time or hour < self.end_time:

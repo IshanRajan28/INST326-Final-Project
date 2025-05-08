@@ -75,7 +75,7 @@ def extract_timestamp(log_line):
     """
     patterns = [
         r"\[(\d{2}/[A-Za-z]+/\d{4}:\d{2}:\d{2}:\d{2} [+-]\d{4})\]", #Apache/Nginx
-        r'([A-Za-z]{3}  \d{1,2} \d{2}:\d{2}:\d{2}) .*' #SSH
+        r'^([A-Za-z]{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2})' #SSH
 
     ]
     
@@ -87,16 +87,20 @@ def extract_timestamp(log_line):
                 
                 # For Apache/Nginx logs, which include data, time, and timezone
                 if '/' in time_stamp:
-                    return datetime.strptime(time_stamp, '%d/%b/%Y:%H:%M:%S %z')
+                    dt = datetime.strptime(time_stamp, '%d/%b/%Y:%H:%M:%S %z')
                 
                 # For SSH logs, which only include month, day, and time
                 else:
-                    return datetime.strptime(time_stamp, '%b %d %H:%M:%S')
+                    dt = datetime.strptime(time_stamp, '%b %d %H:%M:%S')
+                    dt = dt.replace(year=datetime.now().year)
+                
+                return dt.strftime('%Y-%m-%d %H:%M:%S')  # Consistent format for all types
             
             # Handle the specific exception
-            except ValueError:
-              continue
-    
+            except ValueError as e:
+                print(f"Timestamp format error: {e} in line: {log_line[:50]}...")
+                continue
+                
     #If no timestamp is found or an error occurs
     print(f"Could not parse time script: {log_line}")
     return None
