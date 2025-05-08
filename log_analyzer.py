@@ -110,32 +110,25 @@ class LogAnalyzer:
         Returns:
             list: Detected failed login threats
         """
-        failed_attempts_by_ip = defaultdict(int)
-        failed_attempts_by_username = defaultdict(int)
-        
-        for log_entry in self.parsed_logs:
-            action, status = log_entry.get('action_status', (None, None))
+        #Tracks {(ip, user): attempt_count}
+        groups = defaultdict(int)
+    
+        for entry in self.parsed_logs:
+            action, status = entry.get('action_status', (None, None))
             if action == 'login' and status == 'failure':
-                ip = log_entry.get('ip')
-                username = log_entry.get('username')
-                
-                if ip:
-                    failed_attempts_by_ip[ip]+=1
-                
-                if username:
-                    failed_attempts_by_username[username] += 1
-            
-        threats = []
-        for ip, count in failed_attempts_by_ip.items():
-            if count>= self.threshold:
-                threats.append({'ip': ip, 'failed_attempts': count})
+                ip = entry.get('ip')
+                user = entry.get('username', 'invalid_user')
+                groups[(ip, user)] += 1
         
-        for username, count in failed_attempts_by_username.items():
+        threats = []
+        for (ip, user), count in groups.items():
             if count >= self.threshold:
-                threats.append({'username': username, 'failed_attempts': count})
-
+                threats.append({
+                    'ip': ip,
+                    'username': user,
+                    'failed_attempts': count
+                })
         return threats
-            
         # Planned Tests:
         # Test with exactly threshold failed attempts (should be detected)
         # Test with more than threshold failed attempts (should be detected)

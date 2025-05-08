@@ -45,9 +45,15 @@ def format_threat_details(threat_type, threats):
                 line.append(f"IP: {threat['ip']}")
             if "username" in threat:
                 line.append(f"User: {threat['username']}")
+            
+            if threat_type == 'failed_logins' and 'failed_attempts' in threat:
+                line.append(f"Attempts: {threat['failed_attempts']}")
+            
             if "timestamp" in threat:
                 line.append(f"Time: {threat['timestamp']}")
-            lines.append(" | ".join(line))
+            
+            if line:
+                lines.append(" | ".join(line))
         else:
             lines.append(str(threat))
     
