@@ -3,6 +3,7 @@ from report_generator import generate_summary_report, display_report, save_repor
 from collections import defaultdict
 import os
 from datetime import datetime
+import re
 
 class LogAnalyzer:
     """
@@ -228,18 +229,56 @@ class LogAnalyzer:
         escalation_keywords = ['sudo', 'su', 'root', 'uid=0']
         escalations = []
         
-        for entry in self.parsed_logs:
+        for i, entry in enumerate(self.parsed_logs):
             if entry.get('action_status') is None:
                 continue
             
-            raw_line = entry.get('raw_line')
+            raw_line = entry.get('raw_line', '')
+            
+            keyword_found = False
             for keyword in escalation_keywords:
                 if keyword in raw_line:
-                    escalations.append(entry)
+                    keyword_found = True
                     break
+            if not keyword_found:
+                continue
             
-        return escalations
+            source_user = entry.get('username', 'unknown')
+            if 'sudo:' in raw_line:
+                sudo_match = re.search(r'sudo:\s+([^\s]+)\s+:', raw_line)
+                if sudo_match:
+                    source_user = sudo_match.group(1)
+            
+            target_user = 'root'
+            if 'sudo' in raw_line:
+                target_match = re.search(r'USER=([^\s]+)', raw_line)
+                if target_match:
+                    target_user = target_match.group(1) 
+            elif 'su' in raw_line:
+                su_match = re.search(r'session opened for user ([^\s]+)', raw_line)
+                if su_match:
+                    target_user = su_match.group(1)
+            
+            ip = 'unknown'
+            for prev_entry in reversed(self.parsed_logs[:i]):
+                if prev_entry.get('username') == source_user and prev_entry.get('ip'):
+                    ip = prev_entry['ip']
+                    break
                 
+            command = 'unknown'
+            if 'sudo' in raw_line:
+                command_match = re.search(r'COMMAND=([^\s]+)', raw_line)
+                command = command_match.group(1) if command_match else 'unknown'
+                
+            escalations.append({
+                'source_ip': ip,
+                'source_user': source_user,
+                'target_user': target_user,
+                'command': command,
+                'timestamp': entry.get('timestamp')
+            })
+        return escalations
+                    
         # Planned Tests:
         # Test with clear privilege escalation patterns
         # Test with ambiguous privilege change patterns

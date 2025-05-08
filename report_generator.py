@@ -37,30 +37,42 @@ def format_threat_details(threat_type, threats):
         str: Formatted threat details
     """
     
-    lines = []
-    for threat in threats:
-        if isinstance(threat, dict):
-            line = []
-            if "ip" in threat:
-                line.append(f"IP: {threat['ip']}")
-            if "username" in threat:
-                line.append(f"User: {threat['username']}")
-            
-            if threat_type == 'failed_logins' and 'failed_attempts' in threat:
-                line.append(f"Attempts: {threat['failed_attempts']}")
-            
-            if "timestamp" in threat:
-                line.append(f"Time: {threat['timestamp']}")
-            
-            if line:
-                lines.append(" | ".join(line))
-        else:
-            lines.append(str(threat))
-    
-    if not lines:
-        return f"No details available for {threat_type} threats."
-    
-    return "\n".join(lines)
+    if threat_type == 'privilege_escalation':
+        # Special formatting for privilege escalations
+        lines = []
+        for threat in threats:
+            parts = [
+                f"From: {threat.get('source_user', 'unknown')}→{threat.get('target_user', 'root')}",
+                f"IP: {threat.get('source_ip', 'unknown')}",
+                f"Command: {threat.get('command', 'unknown')}",
+                f"Time: {threat.get('timestamp', 'unknown')}"
+            ]
+            lines.append(" | ".join(parts))
+        return "\n".join(lines)
+
+    else:
+        # Original formatting for other threat types
+        lines = []
+        for threat in threats:
+            if isinstance(threat, dict):
+                line = []
+                if "ip" in threat:
+                    line.append(f"IP: {threat['ip']}")
+                if "username" in threat:
+                    line.append(f"User: {threat['username']}")
+                
+                if threat_type == 'failed_logins' and 'failed_attempts' in threat:
+                    line.append(f"Attempts: {threat['failed_attempts']}")
+                
+                if "timestamp" in threat:
+                    line.append(f"Time: {threat['timestamp']}")
+                
+                if line:
+                    lines.append(" | ".join(line))
+            else:
+                lines.append(str(threat))
+        
+        return "\n".join(lines) if lines else f"No details available for {threat_type} threats."
 
     # Planned Tests:
     # Test formatting failed login threats
