@@ -1,4 +1,4 @@
-from log_parser import parse_log_line
+from log_parser import parse_single_log_line
 from report_generator import generate_summary_report, display_report, save_report
 from collections import defaultdict
 import os
@@ -67,7 +67,7 @@ class LogAnalyzer:
         try:
             with open(self.log_file_path, 'r') as file:
                 for line in file:
-                    parsed_entry = parse_log_line(line)
+                    parsed_entry = parse_single_log_line(line)
                     if parsed_entry:
                         self.parsed_logs.append(parsed_entry)
         
