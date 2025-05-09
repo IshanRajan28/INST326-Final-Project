@@ -1,3 +1,4 @@
+import os
 
 def generate_summary_report(threats_summary):
     """
@@ -130,10 +131,17 @@ def save_report(report, output_file_path):
     """
 
     try:
-        with open(output_file_path, "w") as file:
+        with open(output_file_path, "w", encoding="utf-8") as file:
             file.write(report)
+            file.flush()
+            os.fsync(file.fileno()) 
         return True
-    except:
+    
+    except PermissionError:
+        print(f"ERROR: Permission denied when writing to {output_file_path}")
+        return False
+    
+    except Exception as e:
         return False
     
     # Planned Tests:
