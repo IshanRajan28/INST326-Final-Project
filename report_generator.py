@@ -20,11 +20,12 @@ def generate_summary_report(threats_summary):
         if threats:
             report += format_threat_details(threat_type, threats) + "\n"
     return report
-    
-    # Planned Tests:
-    # Test with multiple types of threats
-    # Test with single type of threat
-    # Test with empty threats dictionary
+
+  
+# Planned Tests:
+# Test with multiple types of threats
+# Test with single type of threat
+# Test with empty threats dictionary
 
 def format_threat_details(threat_type, threats):
     """
@@ -39,17 +40,18 @@ def format_threat_details(threat_type, threats):
     """
     
     if threat_type == 'privilege_escalation':
-        # Special formatting for privilege escalations
         lines = []
         for threat in threats:
             parts = [
-                f"From: {threat.get('source_user', 'unknown')}→{threat.get('target_user', 'root')}",
+                f"From: {threat.get('source_user', 'unknown')}"
+                f"→{threat.get('target_user', 'root')}",
                 f"IP: {threat.get('source_ip', 'unknown')}",
                 f"Command: {threat.get('command', 'unknown')}",
                 f"Time: {threat.get('timestamp', 'unknown')}"
             ]
             lines.append(" | ".join(parts))
-        lines.append("\nRecommendation: Monitor privilege escalation events for unauthorized access.")
+        lines.append("\nRecommendation: Monitor privilege escalation events for " 
+                    "unauthorized access.")
         return "\n".join(lines)
 
     elif threat_type == 'failed_logins':
@@ -67,7 +69,8 @@ def format_threat_details(threat_type, threats):
                     line.append(f"Time: {threat['timestamp']}")
                 if line:
                     lines.append(" | ".join(line))
-        lines.append("\nRecommendation: Review failed login attempts for potential brute-force attacks.")
+        lines.append("\nRecommendation: Review failed login attempts for potential "
+                    "brute-force attacks.")
         return "\n".join(lines)
     
     elif threat_type == 'suspicious_ips':
@@ -75,7 +78,8 @@ def format_threat_details(threat_type, threats):
         for item in threats:
             ip = item['ip'] if isinstance(item, dict) else item
             lines.append(f"IP: {ip}")
-        lines.append("\nRecommendation: Investigate activity from known malicious IP addresses.")
+        lines.append("\nRecommendation: Investigate activity from known malicious IP "
+                    "addresses.")
         return "\n".join(lines)
     
     elif threat_type == 'unusual_access_times':
@@ -90,7 +94,8 @@ def format_threat_details(threat_type, threats):
                 line.append(f"Time: {threat['timestamp']}")
             if line:
                 lines.append(" | ".join(line))
-        lines.append("\nRecommendation: Investigate user activity during unusual hours for potential compromise.")
+        lines.append("\nRecommendation: Investigate user activity during unusual hours" 
+                    "for potential compromise.")
         return "\n".join(lines)
     
     else:
@@ -109,14 +114,18 @@ def format_threat_details(threat_type, threats):
             else:
                 lines.append(str(threat))
         
-    return "\n".join(lines) if lines else f"No details available for {threat_type} threats."
+    if lines:
+        return "\n".join(lines)
+    else:
+        return f"No details available for {threat_type} threats."
 
-    # Planned Tests:
-    # Test formatting failed login threats
-    # Test formatting suspicious IP threats
-    # Test formatting unusual access time threats
-    # Test formatting privilege escalation threats
-    # Test with unknown threat type
+
+# Planned Tests:
+# Test formatting failed login threats
+# Test formatting suspicious IP threats
+# Test formatting unusual access time threats
+# Test formatting privilege escalation threats
+# Test with unknown threat type
 
 def save_report(report, output_file_path):
     """
@@ -143,11 +152,12 @@ def save_report(report, output_file_path):
     
     except Exception as e:
         return False
-    
-    # Planned Tests:
-    # Test saving to valid file path
-    # Test saving with permission issues
-    # Test saving empty report
+
+  
+# Planned Tests:
+# Test saving to valid file path
+# Test saving with permission issues
+# Test saving empty report
 
 def display_report(report):
     """
@@ -161,8 +171,9 @@ def display_report(report):
         print(report)
     else:
         print("The report is empty.")
-    
-    # Planned Tests:
-    # Test displaying regular report
-    # Test displaying report with ANSI color formatting
-    # Test displaying empty report
+
+  
+# Planned Tests:
+# Test displaying regular report
+# Test displaying report with ANSI color formatting
+# Test displaying empty report
