@@ -243,7 +243,7 @@ class LogAnalyzer:
             if not keyword_found:
                 continue
             
-            source_user = entry.get('username', 'unknown')
+            source_user = entry.get('username', 'N/A')
             if 'sudo:' in raw_line:
                 sudo_match = re.search(r'sudo:\s+([^\s]+)\s+:', raw_line)
                 if sudo_match:
@@ -259,7 +259,7 @@ class LogAnalyzer:
                 if su_match:
                     target_user = su_match.group(1)
             
-            ip = 'unknown'
+            ip = 'N/A'
             for prev_entry in reversed(self.parsed_logs[:i]):
                 if prev_entry.get('username') == source_user and prev_entry.get('ip'):
                     ip = prev_entry['ip']
@@ -268,7 +268,7 @@ class LogAnalyzer:
             command = 'unknown'
             if 'sudo' in raw_line:
                 command_match = re.search(r'COMMAND=([^\s]+)', raw_line)
-                command = command_match.group(1) if command_match else 'unknown'
+                command = command_match.group(1) if command_match else command
                 
             escalations.append({
                 'source_ip': ip,

@@ -161,7 +161,7 @@ def extract_username(log_line):
     if (kv_match := re.search(r'user(?:name)?[=:]"?([^\s"\]]+)', log_line, re.IGNORECASE)):
         return kv_match.group(1)
     
-    return None
+    return "N/A"
 
 def extract_action_status(log_line):
     """
