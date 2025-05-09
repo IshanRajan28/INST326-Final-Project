@@ -5,10 +5,19 @@ def generate_summary_report(threats_summary):
     Create a summary report based on threat detection findings.
     
     Args:
-        threats_summary (dict): Dictionary of threats by category
-    
+        threats_summary (dict): A dictionary where each key represents a type of threat (e.g., 'failed_logins', 
+                                'privilege_escalation') and the corresponding value is a list of threat data 
+                                related to that type.
     Returns:
-        str: Formatted report text
+        str: A formatted report text summarizing detected threats by category.
+    
+    Example:
+        threats_summary = {
+            'failed_logins': [{'ip': '192.168.0.1', 'username': 'admin', 'failed_attempts': 5}],
+            'privilege_escalation': [{'source_user': 'user1', 'target_user': 'root', 'command': 'sudo su'}]
+        }
+        report = generate_summary_report(threats_summary)
+        print(report)
     """
 
     if not threats_summary:
@@ -32,11 +41,20 @@ def format_threat_details(threat_type, threats):
     Format detailed information for a specific threat type.
     
     Args:
-        threat_type (str): Type of threat (e.g, 'failed_logins')
-        threats (list): List of threats of this type
+        threat_type (str): Type of threat (e.g., 'failed_logins', 
+                        'privilege_escalation').
+        threats (list): A list of threats of the specified type, where each item is a 
+                        dictionary with relevant information. Example for 'failed_logins': 
+                        [{'ip': '192.168.0.1', 'username': 'admin', 
+                        'failed_attempts': 5, 'timestamp': '2025-05-09 10:30:00'}].
     
     Returns:
         str: Formatted threat details
+    
+    Example:
+        format_threat_details('failed_logins', [{'ip': '192.168.0.1', 'username': 
+        'admin', 'failed_attempts': 5}]) Returns: "IP: 192.168.0.1 | User: admin 
+        | Attempts: 5 | Time: 2025-05-09 10:30:00"
     """
     
     if threat_type == 'privilege_escalation':
@@ -132,11 +150,16 @@ def save_report(report, output_file_path):
     Save a generated report to a file.
     
     Args:
-        report (str): The report content
-        output_file_path (str): Path were to save the report
+        report (str): The content of the report to be saved.
+        output_file_path (str): The path to the file where the report will be saved.
     
     Returns:
-        bool: True if successful, False otherwise
+        bool: True if the report was saved successfully, False if there was an error 
+        (e.g., file permission issues).
+    
+    Example:
+        save_report("Threat Report\n...", "/path/to/report.txt")
+        Returns: True if file is saved successfully.
     """
 
     try:
@@ -164,7 +187,12 @@ def display_report(report):
     Display a report to the console with appropriate formatting.
     
     Args:
-        report (str): The report content
+        report (str): The report content to be displayed. If the report is empty, a 
+                    message is printed to indicate this.
+    
+    Example:
+        display_report("Threat Report\n...")
+        Prints the report to the console.
     """
     
     if report:
