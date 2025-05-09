@@ -1,0 +1,10 @@
+May  8 10:14:30 server sshd[1999]: Failed password for root from 192.168.1.101 port 22 ssh2
+May  8 10:14:31 server sshd[2000]: Failed password for root from 192.168.1.101 port 22 ssh2
+May  8 10:14:32 server sshd[2001]: Failed password for root from 192.168.1.101 port 22 ssh2
+May  8 10:14:33 server sshd[2002]: Accepted password for root from 185.232.67.3 port 22 ssh2
+May  8 10:15:00 server sudo: user : TTY=pts/0 ; PWD=/home/user ; USER=root ; COMMAND=/bin/bash
+May  8 10:15:02 server su: pam_unix(su:session): session opened for user root by user(uid=1001)
+May  8 01:45:01 server sshd[2100]: Accepted password for jim from 10.0.0.1 port 22 ssh2
+May  8 02:00:00 server sudo: jim : TTY=pts/1 ; PWD=/home/jim ; USER=root ; COMMAND=/usr/bin/top
+May  8 03:15:10 server sshd[2200]: Accepted password for user from 192.168.1.105 port 22 ssh2
+May  8 04:59:59 server sudo: user : TTY=pts/2 ; PWD=/home/user ; USER=root ; COMMAND=/bin/ls
