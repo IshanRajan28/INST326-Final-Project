@@ -1,5 +1,0 @@
-May  7 14:15:01 server sshd[2356]: Failed password for invalid user test from 192.168.1.100 port 45562 ssh2
-May  7 14:15:03 server sshd[2356]: Failed password for invalid user test from 192.168.1.100 port 45562 ssh2
-May  7 14:15:06 server sshd[2356]: Failed password for invalid user test from 192.168.1.100 port 45562 ssh2
-May  7 14:15:45 server sshd[2356]: Accepted password for jim from 10.0.0.10 port 55213 ssh2
-May  7 14:20:13 server sudo:     jim : TTY=pts/0 ; PWD=/home/jim ; USER=root ; COMMAND=/usr/bin/top
