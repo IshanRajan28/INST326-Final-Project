@@ -48,6 +48,7 @@ def format_threat_details(threat_type, threats):
                 f"Time: {threat.get('timestamp', 'unknown')}"
             ]
             lines.append(" | ".join(parts))
+        lines.append("\nRecommendation: Monitor privilege escalation events for unauthorized access.")
         return "\n".join(lines)
 
     else:
@@ -71,6 +72,10 @@ def format_threat_details(threat_type, threats):
                     lines.append(" | ".join(line))
             else:
                 lines.append(str(threat))
+
+        if threat_type == 'failed_logins':
+            lines.append("\nRecommendation: Review failed login attempts for potential brute-force attacks.")
+                
         
         return "\n".join(lines) if lines else f"No details available for {threat_type} threats."
 
