@@ -44,21 +44,32 @@ sample_logs = [
 
 @pytest.fixture
 def temp_log_file():
-    """Creates a temporary log file for testing."""
+    """Creates a temporary log file with sample logs for testing.
+    Ensures tests don't rely on external files and are isolated.
+    """
     with tempfile.NamedTemporaryFile(delete=False, mode='w') as tf:
         tf.write("\n".join(entry['raw_line'] for entry in sample_logs))
         return tf.name
 
 def test_init_valid_file(temp_log_file):
+    """Test that LogAnalyzer initializes correctly with a valid log file.
+    - Verifies the file path is stored.
+    - Checks default threshold (3) is set.
+    """
     analyzer = LogAnalyzer(temp_log_file)
     assert analyzer.log_file_path == temp_log_file
     assert analyzer.threshold == 3
 
 def test_init_invalid_file():
+    """Test that LogAnalyzer raises FileNotFoundError for non-existent files."""
     with pytest.raises(FileNotFoundError):
         LogAnalyzer("non_existent_file.log")
 
 def test_parse_log_file(monkeypatch, temp_log_file):
+    """Test log parsing with mocked parser.
+    - Mocks parse_single_log_line to return sample entries.
+    - Verifies all sample logs are parsed.
+    """
     def mock_parse_single_log_line(line):
         for entry in sample_logs:
             if entry['raw_line'] in line:
@@ -66,20 +77,37 @@ def test_parse_log_file(monkeypatch, temp_log_file):
         return None
 
     monkeypatch.setattr("log_parser.parse_single_log_line", mock_parse_single_log_line)
-
     analyzer = LogAnalyzer(temp_log_file)
     parsed = analyzer.parse_log_file()
     assert len(parsed) == len(sample_logs)
 
 def test_detect_failed_logins():
-    analyzer = LogAnalyzer(__file__)  # dummy path
+    """Test detection of failed logins meeting the threshold (default=3).
+    - Setup: 3 failed logins from '192.168.1.10'.
+    - Expected: 1 threat detected with 3 attempts.
+    """
+    analyzer = LogAnalyzer(__file__)
     analyzer.parsed_logs = sample_logs
     failed = analyzer.detect_failed_logins()
     assert len(failed) == 1
     assert failed[0]['failed_attempts'] == 3
     assert failed[0]['ip'] == '192.168.1.10'
 
+def test_detect_failed_logins_below_threshold():
+    """Test that failed logins below threshold are ignored.
+    - Setup: 3 failed logins with threshold=5.
+    - Expected: No threats detected.
+    """
+    analyzer = LogAnalyzer(__file__, threshold=5)
+    analyzer.parsed_logs = sample_logs
+    failed = analyzer.detect_failed_logins()
+    assert len(failed) == 0
+
 def test_detect_suspicious_ips():
+    """Test detection of known suspicious IPs.
+    - Setup: Sample logs include '45.227.225.6' (in default suspicious list).
+    - Expected: The IP is flagged.
+    """
     analyzer = LogAnalyzer(__file__)
     analyzer.parsed_logs = sample_logs
     threats = analyzer.detect_suspicious_ips()
@@ -87,12 +115,20 @@ def test_detect_suspicious_ips():
     assert '45.227.225.6' in ips
 
 def test_detect_unusual_access_times():
+    """Test detection of logins during unusual hours (default: 23:00-05:00).
+    - Setup: Sample logs include entries at 00:15-00:17 (within unusual range).
+    - Expected: The entries are flagged.
+    """
     analyzer = LogAnalyzer(__file__, start_time=23, end_time=5)
     analyzer.parsed_logs = sample_logs
     unusual = analyzer.detect_unusual_access_times()
     assert any(entry['timestamp'].startswith('2025-05-10 00') for entry in unusual)
 
 def test_detect_privilege_escalation():
+    """Test detection of privilege escalation via sudo.
+    - Setup: Sample logs include a sudo command escalating to root.
+    - Expected: 1 escalation detected (user1 -> root).
+    """
     analyzer = LogAnalyzer(__file__)
     analyzer.parsed_logs = sample_logs
     priv = analyzer.detect_privilege_escalation()
@@ -101,11 +137,33 @@ def test_detect_privilege_escalation():
     assert priv[0]['target_user'] == 'root'
     assert priv[0]['command'] == '/bin/bash'
 
-def test_generate_report_runs(monkeypatch):
+def test_generate_report(monkeypatch):
+    """Test report generation with mocked dependencies.
+    - Mocks detect_threats() to return predefined data.
+    - Mocks report generator functions to avoid I/O.
+    - Verifies the report contains expected content.
+    """
     analyzer = LogAnalyzer(__file__)
     analyzer.parsed_logs = sample_logs
-    monkeypatch.setattr("report_generator.generate_summary_report", lambda x: "Test Report")
+    
+    # Mock threat detection
+    mock_threats = {
+        "failed_logins": [{"ip": "1.1.1.1", "username": "attacker", "failed_attempts": 3}],
+        "suspicious_ips": [],
+        "unusual_access_times": [],
+        "privilege_escalation": []
+    }
+    monkeypatch.setattr(analyzer, "detect_threats", lambda: mock_threats)
+    
+    # Mock report generation
+    monkeypatch.setattr(
+        "report_generator.generate_summary_report",
+        lambda x: "Mock Report\nThreats: 1 found"
+    )
     monkeypatch.setattr("report_generator.display_report", lambda x: None)
-    result = analyzer.generate_report()
-    assert isinstance(result, str)
+    monkeypatch.setattr("report_generator.save_report", lambda x, y: None)
+    
+    report = analyzer.generate_report()
+    assert "Mock Report" in report
+    assert "Threats: 1 found" in report
 
