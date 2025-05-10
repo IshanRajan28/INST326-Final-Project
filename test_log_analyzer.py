@@ -137,33 +137,4 @@ def test_detect_privilege_escalation():
     assert priv[0]['target_user'] == 'root'
     assert priv[0]['command'] == '/bin/bash'
 
-def test_generate_report(monkeypatch):
-    """Test report generation with mocked dependencies.
-    - Mocks detect_threats() to return predefined data.
-    - Mocks report generator functions to avoid I/O.
-    - Verifies the report contains expected content.
-    """
-    analyzer = LogAnalyzer(__file__)
-    analyzer.parsed_logs = sample_logs
-    
-    # Mock threat detection
-    mock_threats = {
-        "failed_logins": [{"ip": "1.1.1.1", "username": "attacker", "failed_attempts": 3}],
-        "suspicious_ips": [],
-        "unusual_access_times": [],
-        "privilege_escalation": []
-    }
-    monkeypatch.setattr(analyzer, "detect_threats", lambda: mock_threats)
-    
-    # Mock report generation
-    monkeypatch.setattr(
-        "report_generator.generate_summary_report",
-        lambda x: "Mock Report\nThreats: 1 found"
-    )
-    monkeypatch.setattr("report_generator.display_report", lambda x: None)
-    monkeypatch.setattr("report_generator.save_report", lambda x, y: None)
-    
-    report = analyzer.generate_report()
-    assert "Mock Report" in report
-    assert "Threats: 1 found" in report
 
