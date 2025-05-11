@@ -102,6 +102,7 @@ def test_parse_single_log_line_unknown_format():
     assert result['format'] == 'unknown'
 
 def test_parse_single_log_line_with_forced_format():
+    """Test parsing with explicit format override."""
     result = parse_single_log_line(SSH_LOG, format_type='ssh')
     assert result['format'] == 'ssh'
     assert result['username'] == 'bob'
