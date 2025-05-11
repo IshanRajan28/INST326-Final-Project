@@ -37,7 +37,9 @@ INST326-Final-Project/
 ## How It Works
 
 Parse Logs: Extract IP addresses, timestamps, and login info.
+
 Detect Threats: Apply logic and regex to find unusual activity.
+
 Generate Report: Summarize threats into a readable format (console or file).
 
 ## Running the Program
