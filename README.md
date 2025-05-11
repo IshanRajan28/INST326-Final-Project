@@ -24,15 +24,15 @@ INST326-Final-Project/
 
 ## Features
 
-*Detects failed login attempts and brute force patterns
+* Detects failed login attempts and brute force patterns
 
-*Flags suspicious IP addresses
+* Flags suspicious IP addresses
 
-*Identifies access during unusual hours
+* Identifies access during unusual hours
 
-*Generates clean and readable threat reports
+* Generates clean and readable threat reports
 
-*Modular code structure for easy testing and extension
+* Modular code structure for easy testing and extension
 
 ## How It Works
 
