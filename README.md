@@ -6,35 +6,36 @@ A Python command line tool that scans server logs to detect potential security t
 
 INST326-Final-Project/
 
--log_analyzer.py         # Main class for log analysis
+*log_analyzer.py         # Main class for log analysis
 
--log_parser.py           # Handles parsing of log files and extracting data
+*log_parser.py           # Handles parsing of log files and extracting data
 
--report_generator.py     # Formats and outputs threat reports
+*report_generator.py     # Formats and outputs threat reports
 
--test_log_analyzer.py    # Unit tests for the analyzer
+*test_log_analyzer.py    # Unit tests for the analyzer
 
--test_log_parser.py      # Unit tests for the parser
+*test_log_parser.py      # Unit tests for the parser
 
--test_report_generator.py# Unit tests for the reporter
+*test_report_generator.py# Unit tests for the reporter
 
--sample_log.txt          # Example input log file
+*sample_log.txt          # Example input log file
 
--README.md               # This file
+*README.md               # This file
 
 ## Features
 
-Detects failed login attempts and brute force patterns
+*Detects failed login attempts and brute force patterns
 
-Flags suspicious IP addresses
+*Flags suspicious IP addresses
 
-Identifies access during unusual hours
+*Identifies access during unusual hours
 
-Generates clean and readable threat reports
+*Generates clean and readable threat reports
 
-Modular code structure for easy testing and extension
+*Modular code structure for easy testing and extension
 
 ## How It Works
+
 Parse Logs: Extract IP addresses, timestamps, and login info.
 Detect Threats: Apply logic and regex to find unusual activity.
 Generate Report: Summarize threats into a readable format (console or file).
