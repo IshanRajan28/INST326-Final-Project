@@ -10,23 +10,29 @@ def parse_arguments():
     
     Returns:
         argparse.Namespace: Parsed command line arguments
-    """
-    parser = argparse.ArgumentParser(description="Security Log Analyzer - Detect potential security threats in log file")
-    parser.add_argument("log_file", type=str, help="Path to the log file to analyze")
-    parser.add_argument("-o", "--output", type=str, help="Path to save the output report(if not specified, prints to console)")
-    parser.add_argument("-t","--threshold", type=int, default=3, help="Threshold for failed login attempts (default: 3)")
-    parser.add_argument("-i","--suspicious-ips",type=str, help="Comma-separated list of suspicious IP addresses to check for")
-    parser.add_argument("-s","--start-time",type=int,default=23,help="Start hour for unusual access time detection (24-hour format, default: 23)")
-    parser.add_argument("-e", "--end-time", type=int,default=5,help="End hour for unusual access time detection (24-hour format, default: 5)")
     
+    Test cases:
+        - Test with valid command line arguments
+        - Test with missing required arguments
+        - Test with invalid argument values
+        - Test with help flag
+    """
+    parser = argparse.ArgumentParser(description="Security Log Analyzer " 
+                                    "- Detect potential security threats in log file")
+    parser.add_argument("log_file", type=str, help="Path to the log file to "
+                        "analyze")
+    parser.add_argument("-o", "--output", type=str, help="Path to save the output "
+                        "report(if not specified, prints to console)")
+    parser.add_argument("-t","--threshold", type=int, default=3, help="Threshold for "
+                        "failed login attempts (default: 3)")
+    parser.add_argument("-i","--suspicious-ips",type=str, help="Comma-separated list "
+                        "of suspicious IP addresses to check for")
+    parser.add_argument("-s","--start-time",type=int,default=23,help="Start hour for "
+                        "unusual access time detection (24-hour format, default: 23)")
+    parser.add_argument("-e", "--end-time", type=int,default=5,help="End hour for "
+                        "unusual access time detection (24-hour format, default: 5)")
     
     return parser.parse_args()
-
-    # Planned Tests:
-    # Test with valid command line arguments
-    # Test with missing required arguments
-    # Test with invalid argument values
-    # Test with help flag
 
 def main():
     """
@@ -91,7 +97,8 @@ def main():
     # Test complete execution flow with valid inputs
     # Test handling of file not found errors
     # Test handling of parsing errors
-    # Test with various command line argument combinaitons
+    # Test with various command line argument combinations
 
 if __name__ == "__main__":
+    """Entry point when run as a script."""
     main()
