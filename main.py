@@ -77,9 +77,6 @@ def main():
             else:
                 print(f"Error: Could not save report to {args.output}")
                 sys.exit(1)
-        
-        else:
-            display_report(report)
     
     except FileNotFoundError as e:
         print(f"Error: {e}")
