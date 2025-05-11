@@ -6,21 +6,21 @@ A Python command line tool that scans server logs to detect potential security t
 
 INST326-Final-Project/
 
-├── log_analyzer.py         # Main class for log analysis
+-log_analyzer.py         # Main class for log analysis
 
-├── log_parser.py           # Handles parsing of log files and extracting data
+-log_parser.py           # Handles parsing of log files and extracting data
 
-├── report_generator.py     # Formats and outputs threat reports
+-report_generator.py     # Formats and outputs threat reports
 
-├── test_log_analyzer.py    # Unit tests for the analyzer
+-test_log_analyzer.py    # Unit tests for the analyzer
 
-├── test_log_parser.py      # Unit tests for the parser
+-test_log_parser.py      # Unit tests for the parser
 
-├── test_report_generator.py# Unit tests for the reporter
+-test_report_generator.py# Unit tests for the reporter
 
-├── sample_log.txt          # Example input log file
+-sample_log.txt          # Example input log file
 
-└── README.md               # This file
+-README.md               # This file
 
 ## Features
 
@@ -50,6 +50,19 @@ pytest test_log_parser.py
 
 pytest test_report_generator.py
 
+### Manual Test: Report Generation
+1. **Setup**: Run the analyzer on a sample log file:
+   ```python
+   analyzer = LogAnalyzer("sample.log")
+   analyzer.parse_log_file()
+   report = analyzer.generate_report("output.txt")
+   ```
+2. **Verify**:  
+   - Open `output.txt` and check:  
+     - Header contains "Threat Report".  
+     - Correct number of threats listed.  
+     - Formatting is clean.  
+
 ## Dependencies
 
 Python 3.13.3
@@ -63,6 +76,5 @@ Ishan Rajan
 Evan Geisner
 
 ## Status
+
 Core functionality complete
-RegEx improvements in progress
-Test file in progress
