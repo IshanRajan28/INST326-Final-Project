@@ -187,7 +187,8 @@ class LogAnalyzer:
             list: Detected threats during unusual hours
         """
         if not self.parsed_logs:
-            raise ValueError("No parsed logs found. Make sure to run parse_log_file() first.")
+            raise ValueError("No parsed logs found. Make sure to run parse_log_file() " 
+                             "first.")
 
         unusual_entries = []
         for entry in self.parsed_logs:

@@ -61,14 +61,12 @@ def main():
         )
         
         analyzer.parse_log_file()
-        
-        threats_summary = analyzer.detect_threats()
-        
-        report = analyzer.generate_report(threats_summary)
+        report = analyzer.generate_report()
+
         
         if args.output:
             if save_report(report,args.output):
-                print(f"Report saved to {args.output}")
+                print(f"This report is also saved to {args.output}")
             
             else:
                 print(f"Error: Could not save report to {args.output}")
