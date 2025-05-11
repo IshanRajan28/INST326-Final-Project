@@ -7,13 +7,27 @@ import re
 
 class LogAnalyzer:
     """
-    Main class for analzying security logs to detect potential threats
+    Main class for analzying security logs to detect potential threats.
     
     This class handles the coordination of parsing log files, running threat
     detection algorithms, and generating reports on the findings.
+    
+    Attributes:
+        log_file_path (str): Path to the log file to analyze.
+        suspicious_ip_list (list of str): Known malicious IPs to monitor. 
+        Defaults to a predefined list.
+        threshold (int): Minimum number of failed logins to trigger detection. 
+        Defaults to 3.
+        start_time (int): Start hour (24-hour format) for unusual activity detection. 
+        Defaults to 23.
+        end_time (int): End hour (24-hour format) for unusual activity detection. 
+        Defaults to 5.
+        parsed_logs (list of dict): Stores parsed log entries. 
+        Populated after calling `parse_log_file()`.
     """
     
-    def __init__(self, log_file_path, threshold = 3, suspicious_ip_list = None, start_time = 23, end_time = 5):
+    def __init__(self, log_file_path, threshold = 3, suspicious_ip_list = None, 
+                start_time = 23, end_time = 5):
         """
         Initialize the LogAnalyzer with a path to the log file.
         
@@ -28,17 +42,24 @@ class LogAnalyzer:
         self.threshold = threshold
         
         if start_time < 0 or start_time > 23:
-            raise ValueError(f"Invalid start time: {start_time}. Please enter a value between 0 and 23.")
+            raise ValueError(f"Invalid start time: {start_time}. Please enter a " 
+                            "value between 0 and 23.")
         
         if end_time < 0 or end_time > 23:
-            raise ValueError(f"Invalid end time: {end_time}. Please enter a value between 0 and 23.")
+            raise ValueError(f"Invalid end time: {end_time}. Please enter a value between " 
+                            "0 and 23.")
     
         self.start_time = start_time
         self.end_time = end_time
         
+        # The following IPs were identified from public threat intelligence sources:
+        # AbuseIPDB, AlienVault OTX, and Spamhaus. Labels reflect known activity
+        # reported on those platforms as of 2024
+        # Note: These IPs were flagged as malicious in the past (e.g., via AbuseIPDB, 
+        # AlienVault OTX), but may not be currently active threats.
         if suspicious_ip_list is None:
             self.suspicious_ip_list = [
-                '45.227.225.6', # SSH brute-force attacker
+                '45.227.225.6', # SSH brute-force attacker (AbuseIPDB)
                 '185.232.67.3', # Phishing/Spam host (Spamhaus)
                 '185.6.233.3', # Botnet C2 server (AlienVault OTX)
                 '198.144.121.93', # Malware distribution (AbuseIPDB)
@@ -61,6 +82,9 @@ class LogAnalyzer:
         Raises:
             FileNotFoundError: If the log file doesn't exist
             ValueError: If the log file format is invalid
+        
+        Side effects:
+            Updates self.parsed_logs with parsed entries.
         """
         self.parsed_logs = []
         
@@ -84,7 +108,7 @@ class LogAnalyzer:
         """
         Master method that runs all threat detection algorithms and compiles results.
         
-        This method orchestrates the execution of all individual threat
+        This method orchestrates the execution of all individual threat.
         detection methods and compiles their results.
 
         Returns:
@@ -106,11 +130,11 @@ class LogAnalyzer:
         """
         Detects multiple failed login attempts from the same IP or username.
         
-        Args:
-            threshold (int): Number of failed attempts to trigger a detection
-        
         Returns:
-            list: Detected failed login threats
+            list of dict: Each dict contains:
+            - 'ip' (str): The source IP address.
+            - 'username' (str): The attempted username.
+            - 'failed_attempts' (int): Number of failed tries.
         """
         #Tracks {(ip, user): attempt_count}
         groups = defaultdict(int)
@@ -141,11 +165,11 @@ class LogAnalyzer:
         """
         Identifies access from known suspicious IPs.
         
-        Args:
-            suspicious_ip_list (list, optional): List of known suspicious IPS
-        
         Returns:
-            list: Detected threats from suspicious IPs
+            list of dict: Each dict contains:
+                - 'ip' (str): The suspicious IP.
+                - 'count' (int): Number of matches.
+                - 'entries' (list of dict): Raw log entries.
         """
         
         if not self.suspicious_ip_list:
@@ -179,12 +203,12 @@ class LogAnalyzer:
         """
         Detects logins during unusual hours.
         
-        Args:
-            start_hour (int): Start hour for unusual time range (24-hour format)
-            end_hour (int): End hour for unusual time range (24-hour format)
-        
         Returns:
             list: Detected threats during unusual hours
+        
+        Raises:
+            ValueError: No parsed logs found. Make sure to run 
+            parse_log_file() first.
         """
         if not self.parsed_logs:
             raise ValueError("No parsed logs found. Make sure to run parse_log_file() " 
