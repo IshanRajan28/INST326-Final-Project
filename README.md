@@ -42,8 +42,23 @@ Detect Threats: Apply logic and regex to find unusual activity.
 
 Generate Report: Summarize threats into a readable format (console or file).
 
-## Running the Program
-python log_analyzer.py --log sample_log.txt
+## How to Use the Program with sample log file
+```python
+   python main.py apache_access.og
+   ```
+### Results
+```python
+   Threat Report
+   -------------
+
+   Failed_Logins: 0 found
+
+   Suspicious_Ips: 0 found
+
+   Unusual_Access_Times: 0 found
+
+   Privilege_Escalation: 0 found
+   ```
 
 ## Running Tests
 
