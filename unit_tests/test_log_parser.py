@@ -1,3 +1,12 @@
+"""
+Log Parser Unit Tests
+
+Validates parsing of:
+- Standard log formats (Apache/Nginx/SSH)
+- Field extraction (timestamps, IPs, usernames)
+- Edge cases (missing data, invalid formats)
+"""
+
 import pytest
 from datetime import datetime
 from log_parser import (
@@ -40,12 +49,17 @@ def test_extract_timestamp(line, expected):
 
 # Test extract_ip_address
 @pytest.mark.parametrize("line, expected", [
-    (APACHE_LOG, '192.168.1.1'),
+    (APACHE_LOG, '192.168.1.1'), 
     (NGINX_LOG, '127.0.0.1'),
     (SSH_LOG, '10.0.0.1'),
     ("Line without IP", None),
 ])
 def test_extract_ip_address(line, expected):
+    """Test IP extraction from various log formats
+    Args:
+        line: Raw log line input
+        expected: Expected IP address or None if none should be found
+    """
     assert extract_ip_address(line) == expected
 
 # Test extract_username
@@ -72,6 +86,10 @@ def test_extract_action_status(line, expected):
 
 # Test parse_single_log_line
 def test_parse_single_log_line():
+    """Test complete log line parsing with Nginx format
+    - Verifies all extracted fields (format, IP, username, action)
+    - Checks raw line preservation
+    """
     result = parse_single_log_line(NGINX_LOG)
     assert result['format'] == 'Nginx'
     assert result['ip'] == '127.0.0.1'

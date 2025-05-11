@@ -1,3 +1,16 @@
+"""
+Log Analyzer Unit Tests
+
+Validates core log analysis functionality including:
+- Log file parsing and format detection
+- Threat detection algorithms:
+  * Failed login attempts
+  * Suspicious IP addresses
+  * Unusual access times
+  * Privilege escalation
+- File handling and error cases
+"""
+
 import pytest
 import tempfile
 import os
@@ -122,6 +135,7 @@ def test_detect_unusual_access_times():
     analyzer = LogAnalyzer(__file__, start_time=23, end_time=5)
     analyzer.parsed_logs = sample_logs
     unusual = analyzer.detect_unusual_access_times()
+    # Verify at least one login between 23:00-05:00
     assert any(entry['timestamp'].startswith('2025-05-10 00') for entry in unusual)
 
 def test_detect_privilege_escalation():
