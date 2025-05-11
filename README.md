@@ -42,9 +42,9 @@ Detect Threats: Apply logic and regex to find unusual activity.
 
 Generate Report: Summarize threats into a readable format (console or file).
 
-## How to Use the Program with sample log file
+## How to Use the Program (with sample log file as example)
 ```python
-   python main.py apache_access.og
+   python main.py apache_access.log
    ```
 ### Results
 ```python
