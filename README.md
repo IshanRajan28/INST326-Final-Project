@@ -6,6 +6,8 @@ A Python command line tool that scans server logs to detect potential security t
 
 INST326-Final-Project/
 
+* main.py - Handles command-line arguments, coordinates the log analysis process, and manages how the results are displayed or saved
+
 * log_analyzer.py - Main class for log analysis
 
 * log_parser.py - Handles parsing of log files and extracting data
@@ -43,6 +45,9 @@ Detect Threats: Apply logic and regex to find unusual activity.
 Generate Report: Summarize threats into a readable format (console or file).
 
 ## How to Use the Program (with sample log file as example)
+
+* Make sure files are located in the same directory.
+
 ```python
    python main.py apache_access.log
    ```
