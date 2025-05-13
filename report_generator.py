@@ -112,7 +112,7 @@ def format_threat_details(threat_type, threats):
                 line.append(f"Time: {threat['timestamp']}")
             if line:
                 lines.append(" | ".join(line))
-        lines.append("\nRecommendation: Investigate user activity during unusual hours" 
+        lines.append("\nRecommendation: Investigate user activity during unusual hours " 
                     "for potential compromise.")
         return "\n".join(lines)
     
