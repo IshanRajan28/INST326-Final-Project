@@ -77,6 +77,8 @@ Generate Report: Summarize threats into a readable format (console or file).
 
 ## Running Tests
 
+*Include test files in the same directory as the files you are trying to test.
+
 pytest test_log_analyzer.py
 
 pytest test_log_parser.py
