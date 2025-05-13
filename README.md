@@ -65,6 +65,16 @@ Generate Report: Summarize threats into a readable format (console or file).
    Privilege_Escalation: 0 found
    ```
 
+### Command Line Parameters
+
+| Argument                  | Description                                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------------- |
+| `-o`, `--output`          | Path to save the output report. Example: `--output report.txt`                                      |
+| `-t`, `--threshold`       | Threshold for failed login attempts (default: 3). Example: `--threshold 5`                          |
+| `-i`, `--suspicious-ips`  | Comma-separated list of suspicious IPs. Example: `--suspicious-ips 192.168.1.15,10.0.0.5`           |
+| `-s`, `--start-time`      | Start hour for detecting unusual access times (default: 23). Example: `--start-time 22`             |
+| `-e`, `--end-time`        | End hour for detection
+
 ## Running Tests
 
 pytest test_log_analyzer.py
