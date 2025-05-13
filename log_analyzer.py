@@ -309,15 +309,12 @@ class LogAnalyzer:
         # Test with ambiguous privilege change patterns
         # Test with no privilege escalation attempts
 
-    def generate_report(self, output_file=None):
+    def generate_report(self):
         """
         Generate a formatted report of detected threats.
         
-        Uses the report_generator module to create a summary report and either
-        display it to the console or save it to a file.
-
-        Args:
-            output_file (str, optional): Path to save the report, if None prints to console
+        Uses the report_generator module to create a summary report and
+        displays the report to the terminal.
             
         Returns:
             str: The generated report text
@@ -326,11 +323,7 @@ class LogAnalyzer:
         
         report = generate_summary_report(threats)
         
-        if output_file:
-            save_report(report, output_file)
-        
-        else:
-            display_report(report)
+        display_report(report)
         
         return report
         # Planned Tests:
