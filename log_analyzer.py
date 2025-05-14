@@ -313,8 +313,8 @@ class LogAnalyzer:
         """
         Generate a formatted report of detected threats.
         
-        Uses the report_generator module to create a summary report and
-        displays the report to the terminal.
+        Uses the report_generator module to create a summary report and returns
+        the summary report.
             
         Returns:
             str: The generated report text
@@ -322,8 +322,6 @@ class LogAnalyzer:
         threats = self.detect_threats()
         
         report = generate_summary_report(threats)
-        
-        display_report(report)
         
         return report
         # Planned Tests:

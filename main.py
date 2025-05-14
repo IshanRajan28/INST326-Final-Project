@@ -68,6 +68,7 @@ def main():
         
         analyzer.parse_log_file()
         report = analyzer.generate_report()
+        display_report(report)
 
         
         if args.output:
