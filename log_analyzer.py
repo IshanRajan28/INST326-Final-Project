@@ -86,7 +86,6 @@ class LogAnalyzer:
         Side effects:
             Updates self.parsed_logs with parsed entries.
         """
-        self.parsed_logs = []
         
         try:
             with open(self.log_file_path, 'r') as file:
