@@ -1,5 +1,6 @@
 from log_parser import parse_single_log_line
-from report_generator import generate_summary_report, display_report, save_report
+from report_generator import generate_summary_report
+from API import get_malicious_ips, HISTORICAL_IPS
 from collections import defaultdict
 import os
 from datetime import datetime
@@ -27,7 +28,7 @@ class LogAnalyzer:
     """
     
     def __init__(self, log_file_path, threshold = 3, suspicious_ip_list = None, 
-                start_time = 23, end_time = 5):
+                start_time = 23, end_time = 5, threat_api_key=None):
         """
         Initialize the LogAnalyzer with a path to the log file.
         
@@ -52,19 +53,13 @@ class LogAnalyzer:
         self.start_time = start_time
         self.end_time = end_time
         
-        # The following IPs were identified from public threat intelligence sources:
-        # AbuseIPDB, AlienVault OTX, and Spamhaus. Labels reflect known activity
-        # reported on those platforms as of 2024
-        # Note: These IPs were flagged as malicious in the past (e.g., via AbuseIPDB, 
-        # AlienVault OTX), but may not be currently active threats.
+       
         if suspicious_ip_list is None:
-            self.suspicious_ip_list = [
-                '45.227.225.6', # SSH brute-force attacker (AbuseIPDB)
-                '185.232.67.3', # Phishing/Spam host (Spamhaus)
-                '185.6.233.3', # Botnet C2 server (AlienVault OTX)
-                '198.144.121.93', # Malware distribution (AbuseIPDB)
-            ]
-        
+            if threat_api_key:
+                self.suspicious_ip_list = get_malicious_ips(threat_api_key)
+            
+            else:
+                self.suspicious_ip_list = HISTORICAL_IPS        
         else:
             self.suspicious_ip_list = suspicious_ip_list
         

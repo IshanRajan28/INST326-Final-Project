@@ -3,6 +3,7 @@ import argparse
 from log_analyzer import LogAnalyzer
 import os
 from report_generator import save_report, display_report
+import getpass
 
 def parse_arguments():
     """
@@ -30,7 +31,7 @@ def parse_arguments():
     parser.add_argument("-s","--start-time",type=int,default=23,help="Start hour for "
                         "unusual access time detection (24-hour format, default: 23)")
     parser.add_argument("-e", "--end-time", type=int,default=5,help="End hour for "
-                        "unusual access time detection (24-hour format, default: 5)")
+                        "unusual access time detection (24-hour format, default: 5")
     
     return parser.parse_args()
 
@@ -48,22 +49,38 @@ def main():
             print(f"Error: Log file '{args.log_file}' not found")
             sys.exit(1)
         
-        suspicious_ip_list = []
+        suspicious_ip_list = None
         if args.suspicious_ips:
+            suspicious_ip_list = []
             ip_addresses = args.suspicious_ips.split(',')
             for ip in ip_addresses:
                 clean_ip = ip.strip()
                 suspicious_ip_list.append(clean_ip)
         
         else:
-            suspicious_ip_list = None
+             # Handle API key interactively if not provided
+        
+            print("\nNo AbuseIPDB API key provided.")
+            print("You can:")
+            print("1) Enter it now (will be used for this session only)")
+            print("2) Press Enter to skip (limited threat detection)")
+            choice = input("\nYour choice [1/2]: ").strip()
+            
+            if choice == '1':
+                args.key = getpass.getpass("Enter API key (input hidden): ").strip()
+                if not args.key:
+                    print("Warning: Empty key provided, proceeding without live threat data")
+            else:
+                print("Proceeding with historical threat data only")
+                args.key = None
         
         analyzer = LogAnalyzer(
             args.log_file,
             threshold=args.threshold,
             suspicious_ip_list=suspicious_ip_list,
             start_time=args.start_time,
-            end_time=args.end_time
+            end_time=args.end_time,
+            threat_api_key=args.key
         )
         
         analyzer.parse_log_file()
