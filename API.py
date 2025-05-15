@@ -19,8 +19,8 @@ def fetch_live_malicious_ips(api_key: str, limit: int = 5) -> List[str]:
     Fetches current malicious IPs from AbuseIPDB API
     
     Args:
-        api_key: Valid AbuseIPDB API key
-        limit: Maximum IPs to return
+        api_key (str): Valid AbuseIPDB API key.
+        limit (int): Maximum IPs to return.
         
     Returns:
         List of IP addresses or empty list on failure
@@ -28,7 +28,7 @@ def fetch_live_malicious_ips(api_key: str, limit: int = 5) -> List[str]:
     try:
         response = requests.get(
             "https://api.abuseipdb.com/api/v2/blacklist",
-            headers={"Key": api_key, "Accept": "application/json"},
+            headers={"Key": api_key.strip(), "Accept": "application/json"},
             params={"limit": limit},
             timeout=5
         )
@@ -36,6 +36,7 @@ def fetch_live_malicious_ips(api_key: str, limit: int = 5) -> List[str]:
         return [entry['ipAddress'] for entry in response.json().get('data', [])]
     except (requests.RequestException, ValueError, KeyError):
         return []
+
 
 def get_malicious_ips(api_key: Optional[str] = None) -> List[str]:
     """
@@ -52,3 +53,4 @@ def get_malicious_ips(api_key: Optional[str] = None) -> List[str]:
         if live_ips:
             return live_ips
     return HISTORICAL_IPS
+
